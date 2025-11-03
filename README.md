@@ -1,98 +1,121 @@
-# Nested Tags Tree
+# NestedTagsTree
 
-A small web application built with Next.js for creating, editing and visualizing a hierarchical tree of tags. The app provides an intuitive UI for building nested structures, editing node metadata and exporting the tree as JSON.
+NestedTagsTree is a small library/tool to build and work with hierarchical (nested) tag trees from flat tag lists. It helps convert flat arrays of tags (with parent/child relationships or dot/slash-separated paths) into nested tree structures for UI rendering, searching, or exporting.
 
-## Key Features
+> NOTE: Replace the placeholders below (installation, usage, examples, license, etc.) with your project's exact commands and details.
 
-- Dynamic Tree View: create and display a hierarchical tree of tags with nested children.
-- Add Children: add new child nodes to any tag.
-- Edit Names and Data: inline editing of tag names and associated data.
-- Collapsible Nodes: expand and collapse parent nodes to navigate large trees.
-- Export to JSON: export the entire tree structure to a clean JSON file.
-- Persisted Local State: the UI state can be saved and reloaded from localStorage (if enabled in the app).
+## Features
 
-## Quick Links (where to look in the codebase)
+- Build nested tag trees from flat tag lists
+- Support for parent-id relationships and path-based tags
+- Utility helpers to traverse, search, and flatten trees
+- Small, dependency-free core (adapt as needed)
 
-- Main app entry: `src/app/page.tsx`
-- Tree rendering component(s): `src/components/tag-view.tsx`
-- Data manipulation and helpers: `src/lib/tree-data.ts`
-- Common UI primitives or hooks: `src/components/*` and `src/lib/*`
+## Table of Contents
 
-(If filenames have moved, search the repository for `tag-view`, `tree-data` or `page.tsx`.)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Node / JavaScript example](#node--javascript-example)
+  - [Path-based example](#path-based-example)
+- [API](#api)
+- [Running tests](#running-tests)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
+- [Author / Contact](#author--contact)
 
-## Local Development
+## Installation
 
-Requirements
-- Node.js 18+ (recommended)
-- npm (or yarn/pnpm)
+Replace with correct package manager and package name.
 
-Install dependencies:
-```bash
+- Using npm:
+  npm install nested-tags-tree
+
+- Using yarn:
+  yarn add nested-tags-tree
+
+Or clone this repo and build locally:
+
+git clone https://github.com/your-username/NestedTagsTree.git
+cd NestedTagsTree
+# install deps and build (replace with real commands)
 npm install
-```
-
-Run the development server:
-```bash
-npm run dev
-```
-Open http://localhost:3000 in your browser.
-
-Build for production:
-```bash
 npm run build
-npm run start
-```
 
-Other useful scripts (if present in package.json):
-- npm run lint — run linting tools
-- npm run test — run tests (if any)
+## Usage
 
-## Usage / UX Notes
+Basic JS example (CommonJS):
 
-- Click a node to edit its name or data.
-- Use the "Add child" control on any node to create a nested tag.
-- Click the collapse/expand icon to hide or show a node's children.
-- Use the "Export" button to download the tree as a JSON file. The exported structure is a nested array/object structure representing each node and its children.
+const { buildTree } = require('nested-tags-tree');
 
-Example exported JSON structure:
-```json
-[
-  {
-    "id": "root-1",
-    "name": "Root",
-    "data": { "color": "blue" },
-    "children": [
-      {
-        "id": "child-1",
-        "name": "Child",
-        "data": {},
-        "children": []
-      }
-    ]
-  }
-]
-```
+const tags = [
+  { id: 1, name: 'root', parentId: null },
+  { id: 2, name: 'child A', parentId: 1 },
+  { id: 3, name: 'child B', parentId: 1 },
+  { id: 4, name: 'grandchild', parentId: 2 }
+];
 
-## Development Notes
+const tree = buildTree(tags, { idKey: 'id', parentKey: 'parentId', childrenKey: 'children' });
+console.log(JSON.stringify(tree, null, 2));
 
-- The tree data utilities in `src/lib/tree-data.ts` contain functions for adding/removing/updating nodes and traversing trees. If you need to modify the persistence or serialization format, start there.
-- The UI components in `src/components/tag-view.tsx` are responsible for rendering nodes and handling user interactions (edit, add child, collapse).
-- If you add features that change the data shape, make sure the export and import logic are kept in sync.
+ES module example:
+
+import { buildTree } from 'nested-tags-tree';
+const tree = buildTree(tags);
+console.log(tree);
+
+### Path-based example
+
+If your tags are stored as paths:
+
+const paths = ['animals/mammals/dog', 'animals/birds/sparrow', 'plants/tree/oak'];
+const tree = buildFromPaths(paths, { separator: '/' });
+
+## API
+
+Document the exported functions/classes here. Example:
+
+- buildTree(items, options)
+  - items: Array of objects with id and parent id
+  - options:
+    - idKey (string) default: 'id'
+    - parentKey (string) default: 'parentId'
+    - childrenKey (string) default: 'children'
+    - rootParentValues (Array|Set) default: [null, undefined, 0]
+
+- buildFromPaths(paths, options)
+  - paths: Array of strings like 'a/b/c'
+  - options:
+    - separator: '/' (default)
+    - makeNodes?: callback to map path segment to node object
+
+- flattenTree(tree, options)
+  - flattens nested tree back into array
+
+(Replace these signatures with your real API and examples.)
+
+## Running tests
+
+# replace with your test command
+npm test
+
+## Development
+
+- Linting: npm run lint
+- Formatting: npm run format
+- Build: npm run build
+- Example app: cd examples && npm start
 
 ## Contributing
 
-Contributions are welcome. A good way to start:
-1. Fork the repository.
-2. Create a branch for your change.
-3. Add tests (if applicable) and update the README if you change behavior or APIs.
-4. Open a pull request describing the change.
+Contributions are welcome! Please follow these steps:
 
-Please follow existing code style and run linters/tests before opening a PR.
+1. Fork the repo
+2. Create a feature branch: git checkout -b feat/your-feature
+3. Make changes and add tests
+4. Run tests and linters
+5. Open a Pull Request describing your changes
 
-## License
+Please follow the project's code style and include tests for new features and bug fixes.
 
-Include your preferred license here (e.g., MIT). If you don't want to specify one, add a LICENSE file to the repo.
 
-## Contact
-
-For questions or suggestions, open an issue in this repository.
